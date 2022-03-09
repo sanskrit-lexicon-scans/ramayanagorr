@@ -128,8 +128,10 @@ function display_page(vol,page) {
   let urlcur = `pdfpages/${pdfcur}`;
   if (true){ // (true || doesFileExist(urlcur)) 
    let android = ` <a href='${urlcur}' style='position:relative; left:100px;'>Click to load pdf</a>`;
+   //let imageElt = `<object id='servepdf' type='application/pdf' data='${urlcur}' 
+   //           style='width: 98%; height:98%'> ${android} </object>`;
    let imageElt = `<object id='servepdf' type='application/pdf' data='${urlcur}' 
-              style='width: 98%; height:98%'> ${android} </object>`;
+              width="98%"; height="98%"> ${android} </object>`;
    elt2.innerHTML = imageElt;
   }else {
    html = `Vol ${vol}, Page ${page} NOT FOUND`;
