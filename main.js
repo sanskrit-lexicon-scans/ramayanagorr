@@ -124,7 +124,12 @@ function display_page(vol,page) {
   html = `Kanda ${k}, Sarga ${s}, verses ${v1}-${v2}`;
   elt1.innerHTML = html;
   let page1 = page.toString().padStart(3,'0');
-  let pdfcur = `rgorr_${vol}.${page1}.pdf`;
+  /* vol is 1-6. However, the volume 6 is rgorr_uk.N.pdf*/
+  let vol1 = vol;
+  if (vol == 6) {
+   vol1 = 'uk';
+  }
+  let pdfcur = `rgorr_${vol1}.${page1}.pdf`;
   let urlcur = `pdfpages/${pdfcur}`;
   if (true){ // (true || doesFileExist(urlcur)) 
    let android = ` <a href='${urlcur}' style='position:relative; left:100px;'>Click to load pdf</a>`;
