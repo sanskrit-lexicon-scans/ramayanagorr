@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Page check Rāmāyaṇa, Gorresio edition</title>
+<link rel="stylesheet" type="text/css" href="../main.css">
+<style>
+.grid-container {
+  display: grid;
+  grid-column-gap: 5px;
+  grid-row-gap:2px;
+  background-color: #2196F3;
+  padding: 10px;
+  width: 905px;
+}
+.grid-container > div {
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: left; /*center;*/
+  padding: 5px 0;
+  font-size: 20px;
+  
+}
+.item1 {
+    grid-area: 1 / 1 / span 1 / span 2;
+    width: 905px; height:50px;
+}
+.item2 {
+  grid-area: 2 / 1 / span 1 / span 1;
+  width: 300px; height: 800px;
+  overflow: auto;
+}
+.item3 {
+  grid-area: 2 / 2 / span 1 / span 1;
+  width: 600px; height: 800px;
+  overflow: auto;
+}
+
+</style>
+<style>
+  /* for treeview */
+ul, #indexUL {
+  list-style-type: none;
+}
+
+#indexUL {
+  margin: 0;
+  padding: 0;
+}
+
+.caret {
+  cursor: pointer;
+  -webkit-user-select: none; /* Safari 3.1+ */
+  -moz-user-select: none; /* Firefox 2+ */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none;
+}
+
+.caret::before {
+  content: "\25B6";
+  color: black;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.caret-down::before {
+  -ms-transform: rotate(90deg); /* IE 9 */
+  -webkit-transform: rotate(90deg); /* Safari */
+  transform: rotate(90deg);  
+}
+
+.nested {
+  display: none;
+}
+
+.active {
+  display: block;
+}
+
+</style>
+<style>
+  .kanda {color: red;
+	  font-size: 20px;
+	 }
+  .page {font-size: 14px;}
+  .sarga {font-size: 18px;}
+</style>
+
+<style>
+.apage {
+    text-decoration: none;
+    cursor:pointer;
+}
+/* unvisited link */
+.apage:link {
+  color: red;
+}
+
+/* visited link */
+.apage:visited {
+    /* doesn't work. See https://stackoverflow.com/questions/8331688/why-doesnt-this-avisited-css-style-work */
+  color: green;
+}
+
+/* mouse over link */
+.apage:hover {
+    /*color: yellow;*/ /* hotpink;*/
+    text-decoration: underline;
+}
+
+/* selected link */
+.apage:active {
+  color: blue;
+}
+</style>
+</head>
+<body>
+<div class="grid-container">
+ <div id="title" class="item1">
+   <span style="font-size:28px; padding-left:10px;">Pagecheck, Rāmāyaṇa, Gorresio edition</span>
+   <!--
+  <form style="display: inline-block;"
+	action="info.html" method="get" target="_blank">
+       &nbsp;&nbsp;&nbsp;&nbsp;  <button type="submit">Info</button>
+  </form>  
+  -->
+ </div>
+ 
+ <div id="index" class="item2" >
+ </div>
+ 
+ <div class="item3">
+  <div id="verseid" style="padding-left:10px;text-align:center;">
+  </div>
+  <div id="verse">
+   
+  </div>
+ </div> <!-- item3 -->
+</div> <!-- class grid-container -->
+<script src="../ksverse.js"></script>
+<script>
+ //  (setq js-indent-level 1)
+ function make_index() {
+  // (setq js-indent-level 1)
+  let dbg = true;
+  let outarr = [];
+  outarr.push('<div>')
+  outarr.push('<H3 style="padding-left: 10px;">Index</H3>');
+  outarr.push(`<ul id="indexUL"> <!-- indexUL -->`);
+  let kd = indexdata; // kanda object
+  for (let k in kd) { // kanda
+   outarr.push (`<li> <span class="caret kanda">Kanda ${k}</span> <!-- Kanda ${k} -->`);
+   //outarr.push (` <li> <span class="caret" id="kanda${k}">Kanda ${k}</span>`);
+   outarr.push(`<ul class="nested">`);
+   let sd = indexdata[k]; // sarga object
+   for (let s in sd) {
+    outarr.push(`<li> <span class="caret sarga"> Sarga ${s}</span>`);
+    outarr.push(`<ul class="nested"> <!-- Sarga ${s} -->`)
+    let pagerecs = sd[s]; // array of page objects
+    let npages = pagerecs.length;
+    let ipagerec = 0;
+    for (let pagerec of pagerecs) {
+     ipagerec = ipagerec + 1;
+     let v = pagerec['v']; // volume
+     let p = pagerec['page'];
+     let v1 = pagerec['v1'];
+     let v2 = pagerec['v2'];
+     //let btn = `<button onclick="display_page(${v},${p});">verses ${v1}-${v2}</button>`;
+     //let elt = `<li class="page" id="page${v}.${p}">${btn}</li>`;
+     //let a = `<a href="javascript:display_page(${v},${p});" class="apage">verses ${v1}-${v2}</a>`;
+     //let a = `<a onclick="javascript:display_page(${v},${p});this.style.fontWeight='bold';" class="apage">verses ${v1}-${v2}</a>`;
+     let a = `<span onclick="javascript:display_page(${v},${p});this.style.fontWeight='bold';" class="apage">verses ${v1}-${v2}</span>`;
+     let elt = `<li class="page" id="page${v}.${p}">${a}</li>`;
+     if (dbg) {console.log('elt=',elt); dbg=false;}
+     outarr.push(elt);
+    }
+    outarr.push(`</ul> <!-- Sarga ${s} -->`); //sarga
+    outarr.push(`</li> <!-- Sarga ${s} -->`);
+   }
+   outarr.push(`</ul> <!-- Kanda ${k} -->`); //kanda
+   outarr.push(`</li> <!-- Kanda ${k} -->`);
+  }
+  outarr.push(`</ul> <!-- indexUL -->`); // indexUL
+  let html = outarr.join("\n"); // important to use doublequote
+
+  if (false) { // dbg
+   for(let i=0;i<10;i++) {
+    console.log(outarr[i]);
+   }
+  }
+  return html;
+ }
+  function test_make_index() {
+   console.log('test_make_index entered');
+   let html = make_index();
+   console.log('html length=',html.length);
+   let elt=document.getElementById('index');
+   elt.innerHTML = `<div style="padding-left: 10px;">${html}</div>`;
+   init_treeview_toggle();
+  }
+  </script>
+
+<script>
+function init_treeview_toggle() {
+ // Treeview
+ //Ref: https://www.w3schools.com/howto/howto_js_treeview.asp
+ var toggler = document.getElementsByClassName("caret");
+ var i; 
+ for (i = 0; i < toggler.length; i++) {
+  toggler[i].addEventListener("click", function() {
+    this.parentElement.querySelector(".nested").classList.toggle("active");
+    this.classList.toggle("caret-down");
+  });
+ }
+}
+  function openTreeAtPageId(id) {
+   //elt:  <li class="page"...</li>
+   let elt = document.getElementById(id);
+   if (! elt) {return false;}
+   //elt0: <ul class="nested">
+   let elt0 = elt.parentNode;
+   
+   //elt1: <li> 
+   let elt1 = elt0.parentNode;
+
+   // elt1a: <span class="caret sarga">x</span>   click here
+   let elt1a = elt1.querySelector('.caret');
+   
+   //elt2: <ul class="nested">
+   let elt2 = elt1.parentNode;
+
+   //elt3: <li> 
+   let elt3 = elt2.parentNode;
+
+   //elt3a: <span class="caret kanda"> ... click here
+   let elt3a = elt3.querySelector('.caret');
+   
+   elt1a.click();
+   elt3a.click();
+   elt1a.scrollIntoView();
+
+  }
+</script>
+
+<script src="main.js"></script>
+
+</body>
+</html>
