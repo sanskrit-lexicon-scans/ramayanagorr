@@ -29,6 +29,8 @@ class Pagerec(object):
    partsnum.append(part)
   self.flagnum = flagnum
   self.vol = partsnum[0]
+  if self.vol == 'UK':
+   self.vol = '6'
   self.page = partsnum[1]
   self.kanda = partsnum[2]
   self.sarga = partsnum[3]
